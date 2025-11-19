@@ -5,21 +5,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
 public class ControladorRecetas {
 
-    private static final List<String> listaRecetas = Arrays.asList("Pizza", "Espagueti", "Lasaña");
-    private static final Map<String, List<String>> recetasConIngredientes = new HashMap<>();
+    private static final String[] listaRecetas = {"Pizza", "Espagueti", "Lasaña"};
+    private static final Map<String, String[]> recetasConIngredientes = new HashMap<>();
 
     public ControladorRecetas() {
-        recetasConIngredientes.put("Pizza", Arrays.asList("Pan", "Salsa de tomate", "Queso", "Pepperoni"));
-        recetasConIngredientes.put("Espagueti", Arrays.asList("Pasta", "Salsa de tomate", "Carne", "Queso"));
-        recetasConIngredientes.put("Lasaña", Arrays.asList("Pasta", "Salsa de tomate", "Queso", "Albahaca", "Espinaca", "Pollo", "Salsa blanca"));
+        recetasConIngredientes.put("Pizza", new String[]{"Pan", "Salsa de tomate", "Queso", "Pepperoni"});
+        recetasConIngredientes.put("Espagueti", new String[]{"Pasta", "Salsa de tomate", "Carne molida", "Queso parmesano"});
+        recetasConIngredientes.put("Lasaña", new String[]{"Pasta", "Salsa de tomate", "Queso", "Albahaca", "Espinaca", "Champiñones"});
     }
 
     @RequestMapping("/recetas")
@@ -33,12 +31,13 @@ public class ControladorRecetas {
         String nombreNormalizado = nombre.trim();
 
         if (!recetasConIngredientes.containsKey(nombreNormalizado)) {
-            modelo.addAttribute("error", "La receta no se encuentra en nuestra lista.");
-            return "detalleReceta";
+            modelo.addAttribute("nombreReceta", null);
+            modelo.addAttribute("ingredientes", null);
+        } else {
+            modelo.addAttribute("nombreReceta", nombreNormalizado);
+            modelo.addAttribute("ingredientes", recetasConIngredientes.get(nombreNormalizado));
         }
 
-        modelo.addAttribute("nombre", nombreNormalizado);
-        modelo.addAttribute("ingredientes", recetasConIngredientes.get(nombreNormalizado));
         return "detalleReceta";
     }
 }
